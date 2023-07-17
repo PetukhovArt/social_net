@@ -1,6 +1,6 @@
 import React from "react";
-import c from "./News.module.css";
 
-export const News = (props: any) => {
+const News = () => {
   return <div>News</div>;
 };
+export default News

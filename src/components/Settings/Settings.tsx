@@ -1,6 +1,6 @@
 import React from "react";
-import c from "components/Settings/Settings.module.css";
 
-export const Settings = (props: any) => {
+ const Settings = () => {
   return <div>Settings</div>;
 };
+ export default Settings

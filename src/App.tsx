@@ -1,21 +1,23 @@
-import React from "react";
+import React, {Suspense} from 'react';
 import "App.css";
 import { Navbar } from "components/Navbar/Navbar";
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
-import { News } from "components/News/News";
-import { Music } from "components/Music/News";
-import { Settings } from "components/Settings/Settings";
+import {Route, Routes} from 'react-router-dom';
 import { SideBarContainer } from "components/Navbar/Sidebar/SideBarContainer";
-import UsersContainer from "components/Users/UsersContainer";
 import HeaderContainer from "components/Header/HeaderContainer";
-import DialogsContainer from "components/Dialogs/DialogsContainer";
 import Login from "components/Login/Login";
-import {connect, Provider} from 'react-redux';
+import {connect} from 'react-redux';
 import { compose } from "redux";
 import { initializeAppTC } from "redux/app-reducer";
-import {AppRootStateType, store} from 'redux/store-redux';
+import {AppRootStateType } from 'redux/store-redux';
 import { Loader } from "components/common/Loader/Loader";
-import ProfileContainer, { withRouter } from "components/Profile/ProfileContainer";
+import { withRouter } from "components/Profile/ProfileContainer";
+import { lazy } from 'react';
+import DialogsContainer from 'components/Dialogs/DialogsContainer';
+const ProfileContainer = lazy(() => import('components/Profile/ProfileContainer'));
+const UsersContainer = lazy(() => import('components/Users/UsersContainer'));
+const News = lazy(() => import('components/News/News'))
+const Music = lazy(() => import('components/Music/Music'));
+const Settings = lazy(() => import('components/Settings/Settings'));
 
 class App extends React.Component<AppPropsType> {
   componentDidMount() {
@@ -31,15 +33,18 @@ class App extends React.Component<AppPropsType> {
           <Navbar />
           <SideBarContainer />
           <div className="app-wrapper-content">
+            <Suspense fallback={<></>}>
             <Routes>
-              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<DialogsContainer />} />
               <Route path="/dialogs/*" element={<DialogsContainer />} />
               <Route path="/profile/:userId?" element={<ProfileContainer />} />
               <Route path="/users/" element={<UsersContainer />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/news" element={<News />} />
               <Route path="/music" element={<Music />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>
+            </Suspense>
           </div>
         </div>
       );
@@ -61,13 +66,5 @@ type mapStateToPropsType = {
   isInitialized: boolean;
 };
 
-const AppContainer = compose(withRouter, connect(mapStateToProps, { initializeAppTC }))(App);
-
-export const MainApp = ()=> {
-  return <BrowserRouter>
-      <Provider store={store}>
-        <AppContainer />
-      </Provider>
-    </BrowserRouter>
-}
+export default compose(withRouter, connect(mapStateToProps, { initializeAppTC }))(App);
 
