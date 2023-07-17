@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEvent, useRef } from "react";
+import React, { ChangeEvent, KeyboardEvent } from "react";
 import c from "components/Profile/ProfileInfo/ProfileStatus/ProfileStatus.module.css";
 
 type ProfileStatusPropsType = {

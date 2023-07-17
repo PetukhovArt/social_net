@@ -1,7 +1,7 @@
 import React from "react";
 import "App.css";
 import { Navbar } from "components/Navbar/Navbar";
-import { Route, Routes } from "react-router-dom";
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import { News } from "components/News/News";
 import { Music } from "components/Music/News";
 import { Settings } from "components/Settings/Settings";
@@ -10,10 +10,10 @@ import UsersContainer from "components/Users/UsersContainer";
 import HeaderContainer from "components/Header/HeaderContainer";
 import DialogsContainer from "components/Dialogs/DialogsContainer";
 import Login from "components/Login/Login";
-import { connect } from "react-redux";
+import {connect, Provider} from 'react-redux';
 import { compose } from "redux";
 import { initializeAppTC } from "redux/app-reducer";
-import { AppRootStateType } from "redux/store-redux";
+import {AppRootStateType, store} from 'redux/store-redux';
 import { Loader } from "components/common/Loader/Loader";
 import ProfileContainer, { withRouter } from "components/Profile/ProfileContainer";
 
@@ -52,8 +52,6 @@ const mapStateToProps = (state: AppRootStateType): mapStateToPropsType => {
   };
 };
 
-export default compose(withRouter, connect(mapStateToProps, { initializeAppTC }))(App);
-
 type AppPropsType = mapDispatchToPropsType & mapStateToPropsType;
 
 type mapDispatchToPropsType = {
@@ -62,3 +60,14 @@ type mapDispatchToPropsType = {
 type mapStateToPropsType = {
   isInitialized: boolean;
 };
+
+const AppContainer = compose(withRouter, connect(mapStateToProps, { initializeAppTC }))(App);
+
+export const MainApp = ()=> {
+  return <BrowserRouter>
+      <Provider store={store}>
+        <AppContainer />
+      </Provider>
+    </BrowserRouter>
+}
+
