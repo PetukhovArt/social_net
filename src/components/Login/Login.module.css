@@ -1,8 +1,0 @@
-.loginWrapper {
-  display: flex;
-  flex-direction: column;
-}
-.formSummaryError {
-  margin-bottom: 10px;
-  color: red;
-}
