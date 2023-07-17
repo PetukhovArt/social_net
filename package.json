@@ -2,7 +2,7 @@
   "name": "social",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://PetukhovArt.github.io/social_net",
+  "homepage": "https://PetukhovArt.github.io/samurai-way",
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",

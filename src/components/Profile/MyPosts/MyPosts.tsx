@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import c from "components/Profile/MyPosts/MyPosts.module.css";
 import { Post } from "components/Profile/MyPosts/Post/Post";
 import { MyPostsPropsType } from "components/Profile/MyPosts/MyPostsContainer";

@@ -1,6 +1,6 @@
 import React from "react";
 import { Field, InjectedFormProps, reduxForm } from "redux-form";
-import { maxLength100, requiredField } from "utils/validations/validations";
+import { maxLength100, maxLength30, requiredField } from "utils/validations/validations";
 import { FormControl } from "components/common/FormsControls/FormsControls";
 
 export type MessageFormDataType = {

@@ -18,6 +18,7 @@ function WithAuthRedirect<T>(Component: ComponentType<T>) {
     if (!props.isAuth) return <Navigate to={"/login"} />;
     return <Component {...(restProps as T)} />;
   };
-  return connect(mapStateToPropsForRedirect)(RedirectComponent);;
+  let ConnectedRedirectComponent = connect(mapStateToPropsForRedirect)(RedirectComponent);
+  return ConnectedRedirectComponent;
 }
 export default WithAuthRedirect;

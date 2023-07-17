@@ -1,7 +1,7 @@
 .profile__posts {
   display: flex;
   flex-direction: column;
-  padding: 10px 0 20px;
+  padding: 10px 0px 20px;
 }
 
 .profile__posts span {
