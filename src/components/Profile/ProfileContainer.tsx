@@ -7,72 +7,33 @@ import {
   getProfileTC,
   getUserStatusTC,
   initialStateProfileType,
-  setUserProfile,
+  setUserProfile, updateUserPhotoTC,
   updateUserStatusTC,
-} from "redux/profile-reducer";
+} from 'redux/profile-reducer';
 import { compose } from "redux";
 import { useParams } from "react-router-dom";
 import withAuthRedirect from "hoc/WithAuthRedirect";
+import {getProfileResponseType} from 'api/api';
 
-export type getProfileResponseType = null | {
-  aboutMe: string;
-  contacts: {
-    facebook: string;
-    website: string;
-    vk: string;
-    twitter: string;
-    instagram: string;
-    youtube: string;
-    github: string;
-    mainLink: string;
-  };
-  lookingForAJob: boolean;
-  lookingForAJobDescription: string;
-  fullName: string;
-  userId: number;
-  photos: {
-    small: string | undefined;
-    large: string | undefined;
-  };
-};
-type PathParamsType = {
-  match: {
-    params: {
-      userId: string;
-    };
-  };
-};
-type mapDispatchToPropsType = {
-  addPost: (postText: string) => void;
-  updatePostText: (updateText: string) => void;
-  setUserProfile: (profile: getProfileResponseType) => void;
-  getProfileTC: (userId: number) => void;
-  getUserStatusTC: (userId: number) => void;
-  updateUserStatusTC: (status: string) => void;
-};
-type mapStateToPropsType = initialStateProfileType & {
-  authorizedUserId: number | null;
-  isAuth: boolean;
-};
-type ProfileContainerPropsType = mapStateToPropsType & mapDispatchToPropsType & PathParamsType;
-
-// wrapper for profileContainer, to use hook useParams
-export function withRouter(Children: any) {
-  return (props: any) => {
-    const match = { params: useParams() };
-    return <Children {...props} match={match} />; //return ProfileContainer (with "match" in props)
-  };
-}
 
 class ProfileContainer extends React.Component<ProfileContainerPropsType> {
-  componentDidMount() {
-    let userId = Number(this.props.match.params.userId);
-    // if (!userId) userId = 28462;
-    if (!userId) {
-      userId = this.props.authorizedUserId!;
+
+  refreshProfile() {
+    let userId = this.props.userId
+    if (!userId && this.props.authorizedUserId) {
+      userId = this.props.authorizedUserId;
     }
     this.props.getProfileTC(userId);
     this.props.getUserStatusTC(userId);
+  }
+  componentDidMount() {
+    console.log(this.props.userId)
+    this.refreshProfile()
+  }
+  componentDidUpdate(prevProps : ProfileContainerPropsType) {
+    if (this.props.userId != prevProps.userId) {
+      this.refreshProfile()
+    }
   }
 
   render() {
@@ -80,6 +41,7 @@ class ProfileContainer extends React.Component<ProfileContainerPropsType> {
       <div className={c.profile}>
         <Profile
           {...this.props}
+          notOwner={!!this.props.userId}
           profile={this.props.profile}
           status={this.props.status}
           updateStatusTC={this.props.updateUserStatusTC}
@@ -89,8 +51,14 @@ class ProfileContainer extends React.Component<ProfileContainerPropsType> {
   }
 }
 
+export function withRouter(Children: any) {
+  return (props: any) => {
+    const {userId}=useParams()
+    return <Children {...props} userId={userId}/>;
+  };
+}
+
 const mapStateToProps = (state: AppRootStateType): mapStateToPropsType => {
-  //data
   return {
     posts: state.profilePage.posts,
     profile: state.profilePage.profile,
@@ -101,13 +69,33 @@ const mapStateToProps = (state: AppRootStateType): mapStateToPropsType => {
 };
 
 export default compose<React.ComponentType>(
-  withAuthRedirect, //3
-  withRouter, //2
+  withAuthRedirect,
+  withRouter,
   connect(mapStateToProps, {
     setUserProfile,
     getProfileTC,
     getUserStatusTC,
     updateUserStatusTC,
+    updateUserPhotoTC
   })
-  //1
 )(ProfileContainer);
+
+
+//TYPES ====================================================================
+
+type mapDispatchToPropsType = {
+  addPost: (postText: string) => void;
+  updatePostText: (updateText: string) => void;
+  setUserProfile: (profile: getProfileResponseType) => void;
+  getProfileTC: (userId: number) => void;
+  getUserStatusTC: (userId: number) => void;
+  updateUserStatusTC: (status: string) => void;
+  updateUserPhotoTC: (file:string)=> void
+};
+type mapStateToPropsType = initialStateProfileType & {
+  authorizedUserId: number | null;
+  isAuth: boolean;
+};
+type ProfileContainerPropsType = mapStateToPropsType & mapDispatchToPropsType
+   & {userId: number};
+

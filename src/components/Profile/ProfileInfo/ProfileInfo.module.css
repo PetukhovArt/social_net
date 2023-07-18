@@ -2,17 +2,18 @@
   display: flex;
   gap: 20px;
 }
-
-.about img {
-  width: 120px;
-  height: 120px;
+.ava img {
+  width: 200px;
 }
 
-.logo {
-  height: 150px;
-  overflow: hidden;
+.avaBlock {
+  width: 200px;
+  height: 200px;
+  position: relative;
+}
+.label {
+  position: absolute;
+  right: -40px;
+  bottom: -9px;
 }
 
-.logo img {
-  width: 100%;
-}

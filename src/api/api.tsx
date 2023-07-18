@@ -47,7 +47,7 @@ export const authAPI = {
 export const profileAPI = {
   getProfile: function (userId: number) {
     return instance
-      .get(`profile/${!userId ? "2" : userId}`) //if no userId => to 2 user page
+      .get<getProfileResponseType>(`profile/${!userId ? "2" : userId}`)
       .then((res) => res.data);
   },
   getStatus: function (userId: number) {
@@ -55,7 +55,51 @@ export const profileAPI = {
   },
   setStatus: function (status: string) {
     return instance
-      .put("profile/status", { status: status }) //max length 300
+      .put("profile/status", { status: status })
+      .then((res) => res.data);
+  },
+  setPhoto: function (photoFile: File) {
+    let formData= new FormData()
+    formData.append('image',photoFile)
+    return instance.put<updatePhotoResType>("profile/photo", formData, {
+      headers: {'Content-Type': 'multipart/form-data'} // not required (formData generates automatically)
+    })
       .then((res) => res.data);
   },
 };
+
+
+//TYPES ===================================================================================================
+
+export type getProfileResponseType = null | {
+  aboutMe: string | undefined
+  contacts: {
+    facebook: string;
+    website: string;
+    vk: string;
+    twitter: string;
+    instagram: string;
+    youtube: string;
+    github: string;
+    mainLink: string;
+  };
+  lookingForAJob: boolean;
+  lookingForAJobDescription: string;
+  fullName: string;
+  userId: number;
+  photos: {
+    small: string | undefined;
+    large: string | undefined;
+  };
+};
+
+export type updatePhotoResType = {
+  resultCode: number
+  messages: string[],
+  data: {
+    photos: {
+      small: string | undefined;
+      large: string | undefined;
+    }
+  }
+}

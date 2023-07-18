@@ -7,7 +7,7 @@ import {
   setUserStatus,
   updateUserStatus,
 } from "redux/profile-reducer";
-import { getProfileResponseType } from "components/Profile/ProfileContainer";
+import {getProfileResponseType} from 'api/api';
 
 describe("profileReducer", () => {
   let initialState: initialStateProfileType;

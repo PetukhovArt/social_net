@@ -1,23 +1,44 @@
-import React from "react";
+import React, {ChangeEvent} from 'react';
 import c from "components/Profile/ProfileInfo/ProfileInfo.module.css";
-import { getProfileResponseType } from "components/Profile/ProfileContainer";
 import { ProfileStatusWithHooks } from "components/Profile/ProfileInfo/ProfileStatus/ProfileStatusWithHooks";
-import { Loader } from "components/common/Loader/Loader";
+import userAva from '../../../assets/images/userPhoto.png'
+import IconButton from '@mui/material/IconButton';
+import {getProfileResponseType} from 'api/api';
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 
 type ProfileInfoPropsType = {
+  notOwner: boolean
   profile: getProfileResponseType;
   status: string;
   updateStatusTC: (status: string) => void;
+  updateUserPhotoTC: (file: any)=> void
 };
 
-export const ProfileInfo = ({ profile, status, updateStatusTC }: ProfileInfoPropsType) => {
+export const ProfileInfo = ({ profile, status, updateStatusTC, notOwner,updateUserPhotoTC }: ProfileInfoPropsType) => {
   if (!profile) {
-    return <Loader />;
+    return <></>;
   }
+  const uploadHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length) {
+      updateUserPhotoTC(e.target.files[0])
+    }
+  };
   return (
     <div>
       <div className={c.about}>
-        <img src={profile.photos.large} alt="ava" />
+        <div className={c.avaBlock}>
+          <div className={c.ava}><img src={profile.photos.large || userAva} alt="ava" /></div>
+          {!notOwner &&
+            <label className={c.label}>
+            <input style={{ display: "none" }} type="file" onChange={uploadHandler} accept="image/*" />
+            <IconButton component="span">
+              <AddAPhotoIcon/>
+              {/*<img className={c.uploadIcon} src={upload} alt="load"/>*/}
+            </IconButton>
+          </label>
+          }
+        </div>
+
         <div>
           <span>{profile.fullName}</span>
           <ProfileStatusWithHooks status={status} updateStatusTC={updateStatusTC} />
